@@ -7,10 +7,10 @@ const products = [
     {title: 'product-6', price: 99},
     {title: 'product-7', price: 123},
     {title: 'product-8', price: 4},
-    {title: 'product-9', price: 12},
+    {title1: 'product-9', price1: 12},
 ];
 
-const renderProductItem = (title, price) => {
+const renderProductItem = (title = 'product', price = 0) => {
     return `<div class="fetured_item">
                 <a href="Single_page.html"><img src="img/man_product-1.jpg" alt="product image" class="fetured_img"></a>
                 <div class="fetured_text"> <a href="#" class="fetured_description">${title}</a>
@@ -21,10 +21,10 @@ const renderProductItem = (title, price) => {
             </div>`;
 };
 
-const renderProductList = (list) => {
+const renderProductList = (list = [{title: 'product', price: 0}]) => {
     let productList = list.map(item => renderProductItem(item.title, item.price));
     // console.log(productList);
     document.querySelector('.product_container').innerHTML = productList;
 };
 
-renderProductList(products);
+renderProductList();
