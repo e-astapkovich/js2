@@ -27,4 +27,4 @@ const renderProductList = (list = [{title: 'product', price: 0}]) => {
     document.querySelector('.product_container').innerHTML = productList;
 };
 
-renderProductList();
+renderProductList(products);
