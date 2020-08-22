@@ -23,8 +23,7 @@ const renderProductItem = (title = 'product', price = 0) => {
 
 const renderProductList = (list = [{ title: 'product', price: 0 }]) => {
     let productList = list.map(({ title, price }) => renderProductItem(title, price));
-    // console.log(productList);
-    document.querySelector('.product_container').innerHTML = productList;
+    document.querySelector('.product_container').innerHTML = productList.join('');
 };
 
 renderProductList(products);
