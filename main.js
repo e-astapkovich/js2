@@ -11,7 +11,7 @@ const products = [
 ];
 
 class ProductItem {
-    constructor(title, price){
+    constructor(title = 'product', price = 0){
         this.title = title;
         this.price = price;
     }
@@ -32,15 +32,15 @@ class ProductItem {
 
 class ProductList {
     constructor(){
-        
+        this.list = [];
     }
     _fetchProductList(){
-        return products;
+        this.list = products;
     }
     render(){
         let html = '';
-        let list = this._fetchProductList();
-        list.forEach(({ title, price }) => {
+        this._fetchProductList();
+        this.list.forEach(({ title, price }) => {
             html += new ProductItem(title, price).render();
         });
         document.querySelector('.product_container').innerHTML = html;
