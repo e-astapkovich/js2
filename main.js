@@ -7,7 +7,7 @@ const products = [
     { title: 'product-6', price: 99 },
     { title: 'product-7', price: 123 },
     { title: 'product-8', price: 4 },
-    { title1: 'product-9', price1: 12 },
+    { title: 'product-9', price: 12 },
 ];
 
 class ProductItem {
@@ -42,6 +42,12 @@ class ProductList {
             html += new ProductItem(title, price).render();
         });
         document.querySelector('.product_container').innerHTML = html;
+    }
+    countTotal() {
+        let total = 0;
+        this._fetchProductList();
+        this.list.forEach(({ title, price }) => { total += price });
+        return total;
     }
 }
 
@@ -94,3 +100,4 @@ class Cart {
 
 let productList = new ProductList();
 productList.render();
+console.log(productList.countTotal());
