@@ -38,8 +38,8 @@ class ProductList {
         return products;
     }
     render(){
-        let list = this._fetchProductList();
         let html = '';
+        let list = this._fetchProductList();
         list.forEach(({ title, price }) => {
             html += new ProductItem(title, price).render();
         });
@@ -49,26 +49,3 @@ class ProductList {
 
 let productList = new ProductList();
 productList.render();
-
-
-
-
-
-
-// const renderProductItem = (title = 'product', price = 0) => {
-//     return `<div class="fetured_item">
-//                 <a href="Single_page.html"><img src="img/man_product-1.jpg" alt="product image" class="fetured_img"></a>
-//                 <div class="fetured_text"> <a href="#" class="fetured_description">${title}</a>
-//                     <p class="fetured_price"><span class="pink_text">$${price}</span></p>
-//                 </div><a href="#" class="product_add_2">Add to Cart</a>
-//                 <a href="#" class="product_refresh"></a>
-//                 <a href="#" class="product_like"></a>
-//             </div>`;
-// };
-
-// const renderProductList = (list = [{ title: 'product', price: 0 }]) => {
-//     let productList = list.map(({ title, price }) => renderProductItem(title, price));
-//     document.querySelector('.product_container').innerHTML = productList.join('');
-// };
-
-// renderProductList(products);
