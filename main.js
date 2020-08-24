@@ -1,3 +1,5 @@
+'use strict'
+
 const products = [
     { title: 'product-1', price: 50 },
     { title: 'product-2', price: 55 },
