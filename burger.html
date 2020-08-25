@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>burger</title>
+</head>
+
+<body>
+    <fieldset>
+        <form action="#" class="burger-form">
+            <p>Выберите размер бургера:</p>
+            <label><input type="radio" name="size" value="большой" checked data-price="100" data-cals="40">Большой</label>
+            <label><input type="radio" name="size" value="маленький" data-price="50" data-cals="20">Маленький</label>
+            <br>
+            <p>Выберите начинку:</p>
+            <label><input type="radio" name="filling" value="сыр" checked data-price="10" data-cals="20">Сыр</label>
+            <label><input type="radio" name="filling" value="салат" data-price="20" data-cals="5">Салат</label>
+            <label><input type="radio" name="filling" value="картофель" data-price="15" data-cals="10">Картофель</label>
+            <br>
+            <p>Выберите добавку (необязятельно):</p>
+            <label><input type="checkbox" name="add" value="приправа" data-price="15" data-cals="0">Приправа</label>
+            <label><input type="checkbox" name="add" value="майонез" data-price="20" data-cals="5">Майонез</label>
+            <br><br><br>
+            <input type="submit" value="Заказать" id="submit" onclick="event.preventDefault()">
+        </form>
+    </fieldset>
+    <div id="ordered-burgers">
+        <h3>Заказанные бургеры</h3>
+
+    </div>
+    <script defer src="./burger.js"></script>
+</body>
+
+</html>
