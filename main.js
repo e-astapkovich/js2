@@ -1,28 +1,37 @@
 'use strict'
 
-const products = [
-    { title: 'product-1', price: 50 },
-    { title: 'product-2', price: 55 },
-    { title: 'product-3', price: 40 },
-    { title: 'product-4', price: 35 },
-    { title: 'product-5', price: 500 },
-    { title: 'product-6', price: 99 },
-    { title: 'product-7', price: 123 },
-    { title: 'product-8', price: 4 },
-    { title: 'product-9', price: 12 },
-];
+const API_URL = "https://raw.githubusercontent.com/e-astapkovich/online-store-api/master";
+
+function makeGetRequest(url, cb) {
+    let xhr;
+
+    if (window.XMLHttpRequest) {
+        xhr = new XMLHttpRequest();
+    } else if (window.ActiveXObject) {
+        xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            cb(xhr.responseText);
+        }
+    }
+    xhr.open('GET', url, true);
+    xhr.send();
+}
 
 class ProductItem {
-    constructor(title = 'product', price = 0) {
-        this.title = title;
+    constructor(product_name = 'product', price = 0, img) {
+        this.product_name = product_name;
         this.price = price;
+        this.img = img;
     }
 
     render() {
         return `
             <div class="fetured_item">
-                <a href="Single_page.html"><img src="https://via.placeholder.com/263x280" alt="product image" class="fetured_img"></a>
-                <div class="fetured_text"> <a href="#" class="fetured_description">${this.title}</a>
+                <a href="Single_page.html"><img src=${this.img} alt="product image" class="fetured_img"></a>
+                <div class="fetured_text"> <a href="#" class="fetured_description">${this.product_name}</a>
                     <p class="fetured_price"><span class="pink_text">$${this.price}</span></p>
                 </div><a href="#" class="product_add_2">Add to Cart</a>
             </div>
@@ -34,23 +43,25 @@ class ProductList {
     constructor() {
         this.list = [];
     }
-    _fetchProductList() {
-        this.list = products;
+    fetchProductList(cb) {
+        makeGetRequest(`${API_URL}/catalogData.json`, (response) => {
+            this.list = JSON.parse(response);
+            cb();
+        });
     }
-    render() {
+
+    _render() {
         let html = '';
-        this._fetchProductList();
-        this.list.forEach(({ title, price }) => {
-            html += new ProductItem(title, price).render();
+        this.list.forEach(({ product_name, price, img}) => {
+            html += new ProductItem(product_name, price, img).render();
         });
         document.querySelector('.product_container').innerHTML = html;
     }
-    countTotal() {
-        let total = 0;
-        this._fetchProductList();
-        this.list.forEach(({ title, price }) => { total += price });
-        return total;
-    }
+    // countTotal() {
+    //     let total = 0;
+    //     this.list.forEach(({ title, price }) => { total += price });
+    //     return total;
+    // }
 }
 
 class CartItem {
@@ -101,5 +112,6 @@ class Cart {
 }
 
 let productList = new ProductList();
-productList.render();
-console.log(productList.countTotal());
+productList.fetchProductList(() => {
+    productList._render();
+});
