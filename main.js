@@ -2,23 +2,44 @@
 
 const API_URL = "https://raw.githubusercontent.com/e-astapkovich/online-store-api/master";
 
-function makeGetRequest(url, cb) {
-    let xhr;
+function makeGetRequest(url) {
+    return new Promise(function (res, rej) {
+        let xhr;
 
-    if (window.XMLHttpRequest) {
-        xhr = new XMLHttpRequest();
-    } else if (window.ActiveXObject) {
-        xhr = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            cb(xhr.responseText);
+        if (window.XMLHttpRequest) {
+            xhr = new XMLHttpRequest;
+        } else if (window.ActiveXObject) {
+            xhr = new ActiveXObject("Microsoft.XMLHTTP");
         }
-    }
-    xhr.open('GET', url, true);
-    xhr.send();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                res(xhr.responseText);
+            }
+        }
+
+        xhr.open('GET', url, true);
+        xhr.send();
+    });
 }
+
+// function makeGetRequest(url, cb) {
+//     let xhr;
+
+//     if (window.XMLHttpRequest) {
+//         xhr = new XMLHttpRequest();
+//     } else if (window.ActiveXObject) {
+//         xhr = new ActiveXObject("Microsoft.XMLHTTP");
+//     }
+
+//     xhr.onreadystatechange = function () {
+//         if (xhr.readyState === 4) {
+//             cb(xhr.responseText);
+//         }
+//     }
+//     xhr.open('GET', url, true);
+//     xhr.send();
+// }
 
 class ProductItem {
     constructor(product_name = 'product', price = 0, img) {
@@ -43,25 +64,29 @@ class ProductList {
     constructor() {
         this.list = [];
     }
-    fetchProductList(cb) {
-        makeGetRequest(`${API_URL}/catalogData.json`, (response) => {
-            this.list = JSON.parse(response);
-            cb();
-        });
+    // fetchProductList(cb) {
+    //     makeGetRequest(`${API_URL}/catalogData.json`, (response) => {
+    //         this.list = JSON.parse(response);
+    //         cb();
+    //     });
+    // }
+
+    _fetchProductList() {
+        makeGetRequest(`${API_URL}/catalogData.json`)
+            .then(response => this.list = JSON.parse(response));
     }
 
-    _render() {
+    render() {
         let html = '';
-        this.list.forEach(({ product_name, price, img}) => {
-            html += new ProductItem(product_name, price, img).render();
-        });
-        document.querySelector('.product_container').innerHTML = html;
+        this._fetchProductList()
+            .then(() => {
+                this.list.forEach(({ product_name, price, img }) => {
+                    html += new ProductItem(product_name, price, img).render();
+                });
+                document.querySelector('.product_container').innerHTML = html;
+            })
+
     }
-    // countTotal() {
-    //     let total = 0;
-    //     this.list.forEach(({ title, price }) => { total += price });
-    //     return total;
-    // }
 }
 
 class CartItem {
@@ -111,7 +136,9 @@ class Cart {
 
 }
 
-let productList = new ProductList();
-productList.fetchProductList(() => {
-    productList._render();
-});
+// let productList = new ProductList();
+// productList.fetchProductList(() => {
+//     productList._render();
+// });
+
+new ProductList().render();
