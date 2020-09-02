@@ -14,32 +14,18 @@ function makeGetRequest(url) {
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-                res(xhr.responseText);
-            }
+                if (xhr.status === 200) {
+                    res(xhr.responseText);
+                } else {
+                    rej("Ошибка загрузки каталога")
+                }
+            } 
         }
 
         xhr.open('GET', url, true);
         xhr.send();
     });
 }
-
-// function makeGetRequest(url, cb) {
-//     let xhr;
-
-//     if (window.XMLHttpRequest) {
-//         xhr = new XMLHttpRequest();
-//     } else if (window.ActiveXObject) {
-//         xhr = new ActiveXObject("Microsoft.XMLHTTP");
-//     }
-
-//     xhr.onreadystatechange = function () {
-//         if (xhr.readyState === 4) {
-//             cb(xhr.responseText);
-//         }
-//     }
-//     xhr.open('GET', url, true);
-//     xhr.send();
-// }
 
 class ProductItem {
     constructor(product_name = 'product', price = 0, img) {
@@ -63,17 +49,19 @@ class ProductItem {
 class ProductList {
     constructor() {
         this.list = [];
+
     }
-    // fetchProductList(cb) {
-    //     makeGetRequest(`${API_URL}/catalogData.json`, (response) => {
-    //         this.list = JSON.parse(response);
-    //         cb();
-    //     });
-    // }
 
     _fetchProductList() {
-        makeGetRequest(`${API_URL}/catalogData.json`)
-            .then(response => this.list = JSON.parse(response));
+        return new Promise((res, rej) => {
+            makeGetRequest(`${API_URL}/catalogData.json`)
+                .then(response => JSON.parse(response))
+                .then((dataJSON) => this.list = dataJSON)
+                .catch(err => console.log(err))
+                .finally(res);
+        });
+
+
     }
 
     render() {
@@ -135,10 +123,5 @@ class Cart {
     }
 
 }
-
-// let productList = new ProductList();
-// productList.fetchProductList(() => {
-//     productList._render();
-// });
 
 new ProductList().render();
