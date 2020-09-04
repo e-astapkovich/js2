@@ -3,39 +3,46 @@
 const API_URL = "https://raw.githubusercontent.com/e-astapkovich/online-store-api/master";
 
 function makeGetRequest(url) {
-    return new Promise(function (res, rej) {
-        let xhr;
+  return new Promise(function (res, rej) {
+    let xhr;
 
-        if (window.XMLHttpRequest) {
-            xhr = new XMLHttpRequest;
-        } else if (window.ActiveXObject) {
-            xhr = new ActiveXObject("Microsoft.XMLHTTP");
-        }
+    if (window.XMLHttpRequest) {
+      xhr = new XMLHttpRequest;
+    } else if (window.ActiveXObject) {
+      xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    }
 
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    res(xhr.responseText);
-                } else {
-                    rej("Ошибка загрузки каталога")
-                }
-            } 
-        }
+    xhr.open('GET', url, true);
+    xhr.send();
 
-        xhr.open('GET', url, true);
-        xhr.send();
-    });
+    // xhr.onreadystatechange = function () {
+    //   if (xhr.readyState === 4 && xhr.status === 200) {
+    //     res(xhr.responseText);
+    //   } else {
+    //     rej("Ошибка загрузки каталога")
+    //   }
+    // }
+
+    xhr.onload = function() {
+      console.log('onload');
+      res(xhr.responseText);
+    };
+
+    xhr.onerror = function() {
+      res(new Error('Ошибка загрузки каталога'));
+    }
+  });
 }
 
 class ProductItem {
-    constructor(product_name = 'product', price = 0, img) {
-        this.product_name = product_name;
-        this.price = price;
-        this.img = img;
-    }
+  constructor(product_name = 'product', price = 0, img) {
+    this.product_name = product_name;
+    this.price = price;
+    this.img = img;
+  }
 
-    render() {
-        return `
+  render() {
+    return `
             <div class="fetured_item">
                 <a href="Single_page.html"><img src=${this.img} alt="product image" class="fetured_img"></a>
                 <div class="fetured_text"> <a href="#" class="fetured_description">${this.product_name}</a>
@@ -43,49 +50,57 @@ class ProductItem {
                 </div><a href="#" class="product_add_2">Add to Cart</a>
             </div>
         `;
-    }
+  }
 }
 
 class ProductList {
-    constructor() {
-        this.list = [];
+  constructor() {
+    this.list = [];
+    this.filteredList = [];
+    this._fetchProductList();
+  }
 
-    }
+  // _fetchProductList() {
+  //   return new Promise((res, rej) => {
+  //     makeGetRequest(`${API_URL}/catalogData.json`)
+  //       .then(response => JSON.parse(response))
+  //       .then((dataJSON) => {
+  //         this.list = dataJSON;
+  //       })
+  //       .then(this.render())
+  //       .catch(err => console.log(err))
+  //   });
 
-    _fetchProductList() {
-        return new Promise((res, rej) => {
-            makeGetRequest(`${API_URL}/catalogData.json`)
-                .then(response => JSON.parse(response))
-                .then((dataJSON) => this.list = dataJSON)
-                .catch(err => console.log(err))
-                .finally(res);
-        });
+  _fetchProductList() {
+    makeGetRequest(`${API_URL}/catalogData.json`)
+      .then(response => JSON.parse(response))
+      .then((dataJSON) => {
+        this.list = dataJSON;
+        this.filteredList = dataJSON;
+      })
+      .catch(err => console.log(err))
+      .finally(() => this.render());
+  }
 
+  render() {
+    let html = '';
+    this.filteredList.forEach(({ product_name, price, img }) => {
+      html += new ProductItem(product_name, price, img).render();
+    });
+    document.querySelector('.product_container').innerHTML = html;
 
-    }
-
-    render() {
-        let html = '';
-        this._fetchProductList()
-            .then(() => {
-                this.list.forEach(({ product_name, price, img }) => {
-                    html += new ProductItem(product_name, price, img).render();
-                });
-                document.querySelector('.product_container').innerHTML = html;
-            })
-
-    }
+  }
 }
 
 class CartItem {
-    constructor(product) {
-        this.title = product.title;
-        this.price = product.price;
-        this.quantity = 0;
-    }
-    render() {
-        return
-        `
+  constructor(product) {
+    this.title = product.title;
+    this.price = product.price;
+    this.quantity = 0;
+  }
+  render() {
+    return
+    `
             <a href="product.html">
                 <div class="drop-cart__good">
                     <img class="drop-cart__img" src="https://via.placeholder.com/72x85" alt="photo">
@@ -98,30 +113,30 @@ class CartItem {
                 </div>
             </a>
         `;
-    }
+  }
 }
 
 class Cart {
-    constructor() {
-        this.cartList = [];
-        this.visible = false;
-    }
-    show() {
+  constructor() {
+    this.cartList = [];
+    this.visible = false;
+  }
+  show() {
 
-    }
-    add(product) {
+  }
+  add(product) {
 
-    }
-    delete(product) {
+  }
+  delete(product) {
 
-    }
-    countTotal() {
+  }
+  countTotal() {
 
-    }
-    render() {
+  }
+  render() {
 
-    }
+  }
 
 }
 
-new ProductList().render();
+new ProductList();
