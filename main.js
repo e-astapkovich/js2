@@ -2,22 +2,29 @@
 
 const API_URL = "https://raw.githubusercontent.com/e-astapkovich/online-store-api/master";
 
-function makeGetRequest(url, cb) {
-    let xhr;
+function makeGetRequest(url) {
+    return new Promise(function (res, rej) {
+        let xhr;
 
-    if (window.XMLHttpRequest) {
-        xhr = new XMLHttpRequest();
-    } else if (window.ActiveXObject) {
-        xhr = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            cb(xhr.responseText);
+        if (window.XMLHttpRequest) {
+            xhr = new XMLHttpRequest;
+        } else if (window.ActiveXObject) {
+            xhr = new ActiveXObject("Microsoft.XMLHTTP");
         }
-    }
-    xhr.open('GET', url, true);
-    xhr.send();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    res(xhr.responseText);
+                } else {
+                    rej("Ошибка загрузки каталога")
+                }
+            } 
+        }
+
+        xhr.open('GET', url, true);
+        xhr.send();
+    });
 }
 
 class ProductItem {
@@ -42,26 +49,32 @@ class ProductItem {
 class ProductList {
     constructor() {
         this.list = [];
-    }
-    fetchProductList(cb) {
-        makeGetRequest(`${API_URL}/catalogData.json`, (response) => {
-            this.list = JSON.parse(response);
-            cb();
-        });
+
     }
 
-    _render() {
-        let html = '';
-        this.list.forEach(({ product_name, price, img}) => {
-            html += new ProductItem(product_name, price, img).render();
+    _fetchProductList() {
+        return new Promise((res, rej) => {
+            makeGetRequest(`${API_URL}/catalogData.json`)
+                .then(response => JSON.parse(response))
+                .then((dataJSON) => this.list = dataJSON)
+                .catch(err => console.log(err))
+                .finally(res);
         });
-        document.querySelector('.product_container').innerHTML = html;
+
+
     }
-    // countTotal() {
-    //     let total = 0;
-    //     this.list.forEach(({ title, price }) => { total += price });
-    //     return total;
-    // }
+
+    render() {
+        let html = '';
+        this._fetchProductList()
+            .then(() => {
+                this.list.forEach(({ product_name, price, img }) => {
+                    html += new ProductItem(product_name, price, img).render();
+                });
+                document.querySelector('.product_container').innerHTML = html;
+            })
+
+    }
 }
 
 class CartItem {
@@ -111,7 +124,4 @@ class Cart {
 
 }
 
-let productList = new ProductList();
-productList.fetchProductList(() => {
-    productList._render();
-});
+new ProductList().render();
