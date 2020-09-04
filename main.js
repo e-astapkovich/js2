@@ -15,14 +15,6 @@ function makeGetRequest(url) {
     xhr.open('GET', url, true);
     xhr.send();
 
-    // xhr.onreadystatechange = function () {
-    //   if (xhr.readyState === 4 && xhr.status === 200) {
-    //     res(xhr.responseText);
-    //   } else {
-    //     rej("Ошибка загрузки каталога")
-    //   }
-    // }
-
     xhr.onload = function() {
       console.log('onload');
       res(xhr.responseText);
@@ -59,17 +51,6 @@ class ProductList {
     this.filteredList = [];
     this._fetchProductList();
   }
-
-  // _fetchProductList() {
-  //   return new Promise((res, rej) => {
-  //     makeGetRequest(`${API_URL}/catalogData.json`)
-  //       .then(response => JSON.parse(response))
-  //       .then((dataJSON) => {
-  //         this.list = dataJSON;
-  //       })
-  //       .then(this.render())
-  //       .catch(err => console.log(err))
-  //   });
 
   _fetchProductList() {
     makeGetRequest(`${API_URL}/catalogData.json`)
