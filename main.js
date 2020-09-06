@@ -56,7 +56,7 @@ class ProductList {
       .then(response => JSON.parse(response))
       .then((dataJSON) => {
         this.list = dataJSON;
-        this.filteredList = dataJSON;
+        this.filteredList = this.list;
       })
       .catch(err => console.log(err))
       .finally(() => this.render());
