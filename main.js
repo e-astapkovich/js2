@@ -70,6 +70,14 @@ class ProductList {
     document.querySelector('.product_container').innerHTML = html;
 
   }
+
+  filterProducts(input_value) {
+    const regexp = new RegExp(input_value, 'i');
+    this.filteredList = this.list.filter(product => regexp.test(product.product_name));
+    this.render();
+  }
+
+
 }
 
 class CartItem {
@@ -119,8 +127,16 @@ class Cart {
 
 }
 
-document.querySelector(".cart").addEventListener('click', () => {
-  document.querySelector(".drop").classList.toggle('invisible');
+document.querySelector('.cart').addEventListener('click', () => {
+  document.querySelector('.drop_move').classList.toggle('invisible');
 });
 
-new ProductList();
+const list = new ProductList();
+
+document.querySelector('.searh_button').addEventListener('click', (e) => {
+  e.preventDefault();
+  console.log('button click');
+  let value = document.querySelector('.search').value;
+
+  list.filterProducts(value);
+});
