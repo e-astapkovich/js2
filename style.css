@@ -86,8 +86,8 @@ a {
 }
 
 
-.header__cart_box:hover .drop{
-   display: flex;
+.header__cart_box:hover {
+   cursor: pointer;
 }
 
 .menu {
@@ -184,9 +184,13 @@ a {
 
 /*88888888888888888*/
 
+.invisible {
+   display: none;
+}
+
 .drop {
    position: absolute;
-   display: none;
+   /* display: none; */
    border-radius: 5px;
    background-color: #ffffff;
    padding: 0 0 20px;

@@ -16,7 +16,6 @@ function makeGetRequest(url) {
     xhr.send();
 
     xhr.onload = function() {
-      console.log('onload');
       res(xhr.responseText);
     };
 
@@ -119,5 +118,9 @@ class Cart {
   }
 
 }
+
+document.querySelector(".cart").addEventListener('click', () => {
+  document.querySelector(".drop").classList.toggle('invisible');
+});
 
 new ProductList();
